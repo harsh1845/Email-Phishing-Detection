@@ -1,0 +1,54 @@
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  background: #1a0b0b;
+  color: #fbe9e7;
+}
+main {
+  max-width: 640px;
+  margin: 12vh auto;
+  padding: 24px;
+}
+.kicker {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ef9a9a;
+}
+h1 {
+  font-size: 32px;
+  margin: 0 0 12px;
+}
+.url {
+  word-break: break-all;
+  background: #2b1212;
+  padding: 12px;
+  border-radius: 8px;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+.primary {
+  background: #fff;
+  color: #1a0b0b;
+}
+.ghost {
+  background: transparent;
+  color: #ef9a9a;
+  border: 1px solid #ef9a9a;
+}
+.note {
+  margin-top: 32px;
+  color: #c8a8a8;
+  font-size: 12px;
+}

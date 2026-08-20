@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.zip
+.DS_Store
+packages/model/data/
+packages/model/artifacts/*.txt
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+coverage/
+*.log
+packages/extension/public/wasm/
+packages/extension/node_modules/

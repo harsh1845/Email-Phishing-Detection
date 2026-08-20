@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>PhishGuard — unsafe link</title>
+    <link rel="stylesheet" href="interstitial.css" />
+  </head>
+  <body>
+    <main>
+      <p class="kicker">PhishGuard</p>
+      <h1>This link looks like phishing</h1>
+      <p class="url" id="url"></p>
+      <ul id="reasons"></ul>
+      <div class="actions">
+        <button type="button" id="back" class="primary">Go back</button>
+        <button type="button" id="proceed" class="ghost">Proceed anyway</button>
+      </div>
+      <p class="note">
+        If this warning used Google Safe Browsing, some of the information is provided by Google.
+      </p>
+    </main>
+    <script type="module" src="interstitial.js"></script>
+  </body>
+</html>

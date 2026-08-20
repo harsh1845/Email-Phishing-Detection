@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>PhishGuard</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>PhishGuard</h1>
+      <p>On-device phishing link shield for Gmail.</p>
+    </header>
+    <label class="row">
+      <input type="checkbox" id="gsb" />
+      Check Google Safe Browsing (hash prefixes only)
+    </label>
+    <label>
+      Safe Browsing API key
+      <input type="password" id="gsb-key" placeholder="Optional" autocomplete="off" />
+    </label>
+    <label class="row">
+      <input type="checkbox" id="feeds" />
+      Refresh live threat feeds (URLhaus)
+    </label>
+    <label>
+      Extra trusted domains (one per line)
+      <textarea id="allow" rows="5" placeholder="example.com"></textarea>
+    </label>
+    <button type="button" id="save">Save</button>
+    <p id="status"></p>
+    <p class="fine">
+      Email bodies never leave this browser. Safe Browsing, if enabled, sends 4-byte URL hashes — not the email.
+    </p>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

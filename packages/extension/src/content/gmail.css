@@ -1,0 +1,43 @@
+#phishguard-thread-badge,
+.pg-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  vertical-align: middle;
+}
+
+.pg-badge-safe {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.pg-badge-suspicious {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.pg-badge-danger {
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+a.pg-danger {
+  outline: 2px solid #c62828 !important;
+  background-color: rgba(198, 40, 40, 0.12) !important;
+  border-radius: 2px;
+}
+
+a.pg-suspicious {
+  outline: 2px solid #ef6c00 !important;
+  background-color: rgba(239, 108, 0, 0.1) !important;
+  border-radius: 2px;
+}
+
+a.pg-safe {
+  outline: 0;
+}
