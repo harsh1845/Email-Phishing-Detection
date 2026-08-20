@@ -1,0 +1,80 @@
+/** Brand display names mapped to official eTLD+1 domains. */
+export interface Brand {
+  name: string;
+  tokens: string[];
+  domains: string[];
+}
+
+export const BRANDS: Brand[] = [
+  { name: 'PayPal', tokens: ['paypal'], domains: ['paypal.com', 'paypal.me', 'paypalobjects.com'] },
+  { name: 'Apple', tokens: ['apple', 'icloud', 'appstore'], domains: ['apple.com', 'icloud.com', 'appleid.com', 'me.com', 'mac.com', 'itunes.com'] },
+  { name: 'Google', tokens: ['google', 'gmail', 'youtube', 'googleapis'], domains: ['google.com', 'gmail.com', 'youtube.com', 'youtu.be', 'googlemail.com', 'gstatic.com', 'googleusercontent.com', 'withgoogle.com', 'google.co.uk', 'googleapis.com'] },
+  { name: 'Microsoft', tokens: ['microsoft', 'outlook', 'office365', 'onedrive', 'sharepoint', 'azure', 'hotmail', 'live'], domains: ['microsoft.com', 'microsoftonline.com', 'live.com', 'outlook.com', 'office.com', 'office365.com', 'sharepoint.com', 'azure.com', 'windows.net', 'hotmail.com', 'msn.com', 'xbox.com', 'bing.com'] },
+  { name: 'Amazon', tokens: ['amazon', 'aws', 'kindle', 'primevideo'], domains: ['amazon.com', 'amazon.co.uk', 'amazon.de', 'amazon.ca', 'amazon.fr', 'amazon.co.jp', 'amazonaws.com', 'amazon.dev', 'a2z.com', 'primevideo.com'] },
+  { name: 'Facebook', tokens: ['facebook', 'fb', 'meta', 'instagram', 'whatsapp'], domains: ['facebook.com', 'fb.com', 'fb.me', 'meta.com', 'instagram.com', 'whatsapp.com', 'whatsapp.net'] },
+  { name: 'Netflix', tokens: ['netflix'], domains: ['netflix.com', 'nflxext.com', 'nflximg.net'] },
+  { name: 'eBay', tokens: ['ebay'], domains: ['ebay.com', 'ebay.co.uk', 'ebay.de', 'ebayimg.com'] },
+  { name: 'Bank of America', tokens: ['bankofamerica', 'bofa'], domains: ['bankofamerica.com', 'bofa.com'] },
+  { name: 'Chase', tokens: ['chase', 'jpmorgan'], domains: ['chase.com', 'jpmorgan.com', 'jpmorganchase.com'] },
+  { name: 'Wells Fargo', tokens: ['wellsfargo'], domains: ['wellsfargo.com'] },
+  { name: 'Citi', tokens: ['citibank', 'citi'], domains: ['citi.com', 'citibank.com', 'citigroup.com'] },
+  { name: 'American Express', tokens: ['americanexpress', 'amex'], domains: ['americanexpress.com', 'amex.com'] },
+  { name: 'Capital One', tokens: ['capitalone'], domains: ['capitalone.com'] },
+  { name: 'USPS', tokens: ['usps'], domains: ['usps.com', 'usps.gov'] },
+  { name: 'UPS', tokens: ['ups'], domains: ['ups.com'] },
+  { name: 'FedEx', tokens: ['fedex'], domains: ['fedex.com'] },
+  { name: 'DHL', tokens: ['dhl'], domains: ['dhl.com', 'dhl.de'] },
+  { name: 'Adobe', tokens: ['adobe', 'acrobat'], domains: ['adobe.com', 'adobelogin.com', 'typekit.com'] },
+  { name: 'Dropbox', tokens: ['dropbox'], domains: ['dropbox.com', 'dropboxusercontent.com'] },
+  { name: 'LinkedIn', tokens: ['linkedin'], domains: ['linkedin.com', 'licdn.com'] },
+  { name: 'X / Twitter', tokens: ['twitter', 't.co'], domains: ['twitter.com', 'x.com', 'twimg.com'] },
+  { name: 'Binance', tokens: ['binance'], domains: ['binance.com', 'binance.us'] },
+  { name: 'Coinbase', tokens: ['coinbase'], domains: ['coinbase.com'] },
+  { name: 'Steam', tokens: ['steampowered', 'steamcommunity'], domains: ['steampowered.com', 'steamcommunity.com', 'steamusercontent.com'] },
+  { name: 'IRS', tokens: ['irs'], domains: ['irs.gov'] },
+  { name: 'AT&T', tokens: ['att'], domains: ['att.com'] },
+  { name: 'Verizon', tokens: ['verizon'], domains: ['verizon.com', 'verizonwireless.com'] },
+  { name: 'DocuSign', tokens: ['docusign'], domains: ['docusign.com', 'docusign.net'] },
+  { name: 'Zoom', tokens: ['zoom'], domains: ['zoom.us', 'zoom.com'] },
+  { name: 'Slack', tokens: ['slack'], domains: ['slack.com', 'slack-edge.com'] },
+  { name: 'GitHub', tokens: ['github'], domains: ['github.com', 'githubusercontent.com', 'github.io'] },
+  { name: 'Stripe', tokens: ['stripe'], domains: ['stripe.com', 'stripe.network'] },
+  { name: 'Walmart', tokens: ['walmart'], domains: ['walmart.com'] },
+  { name: 'Target', tokens: ['target'], domains: ['target.com'] },
+  { name: 'Costco', tokens: ['costco'], domains: ['costco.com'] },
+  { name: 'HSBC', tokens: ['hsbc'], domains: ['hsbc.com', 'hsbc.co.uk'] },
+  { name: 'Barclays', tokens: ['barclays'], domains: ['barclays.co.uk', 'barclays.com'] },
+  { name: 'Santander', tokens: ['santander'], domains: ['santander.com', 'santander.co.uk'] },
+  { name: 'NAB', tokens: ['nab'], domains: ['nab.com.au'] },
+  { name: 'Commonwealth Bank', tokens: ['commbank', 'cba'], domains: ['commbank.com.au'] },
+  { name: 'ANZ', tokens: ['anz'], domains: ['anz.com'] },
+  { name: 'Westpac', tokens: ['westpac'], domains: ['westpac.com.au'] },
+];
+
+export const BRAND_OFFICIAL_DOMAINS = new Set(
+  BRANDS.flatMap((b) => b.domains),
+);
+
+export const CREDENTIAL_KEYWORDS = [
+  'login',
+  'signin',
+  'sign-in',
+  'log-in',
+  'secure',
+  'account',
+  'update',
+  'verify',
+  'verification',
+  'confirm',
+  'password',
+  'passwd',
+  'credential',
+  'wallet',
+  'billing',
+  'invoice',
+  'recover',
+  'unlock',
+  'limited',
+  'suspend',
+  'urgent',
+];

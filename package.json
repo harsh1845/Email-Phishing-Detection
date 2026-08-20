@@ -1,0 +1,21 @@
+{
+  "name": "phishguard",
+  "private": true,
+  "version": "1.0.0",
+  "description": "On-device phishing link shield for Gmail (Chrome + Firefox)",
+  "workspaces": [
+    "packages/core",
+    "packages/extension"
+  ],
+  "scripts": {
+    "test": "npm test -w @phishguard/core",
+    "build": "npm run build -w @phishguard/extension",
+    "package:chrome": "npm run package:chrome -w @phishguard/extension",
+    "package:firefox": "npm run package:firefox -w @phishguard/extension",
+    "train": "python3 packages/model/train.py",
+    "feeds": "python3 packages/feeds/build_feeds.py"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

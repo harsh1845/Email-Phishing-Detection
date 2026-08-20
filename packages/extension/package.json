@@ -1,0 +1,14 @@
+{
+  "name": "@phishguard/extension",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ./build.mjs",
+    "package:chrome": "node ./build.mjs && node ./scripts/package.mjs chrome",
+    "package:firefox": "node ./build.mjs --firefox && node ./scripts/package.mjs firefox"
+  },
+  "dependencies": {
+    "@phishguard/core": "*"
+  }
+}
