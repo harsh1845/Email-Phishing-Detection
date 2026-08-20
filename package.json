@@ -12,7 +12,7 @@
     "build": "npm run build -w @phishguard/extension",
     "package:chrome": "npm run package:chrome -w @phishguard/extension",
     "package:firefox": "npm run package:firefox -w @phishguard/extension",
-    "train": "python3 packages/model/train.py",
+    "train": "packages/model/.venv/bin/python packages/model/train.py",
     "feeds": "python3 packages/feeds/build_feeds.py"
   },
   "engines": {

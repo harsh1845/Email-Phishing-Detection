@@ -59,12 +59,7 @@ if (existsSync(model)) copy(model, join(dist, 'model'));
 
 const ortWasm = join(here, '../../node_modules/onnxruntime-web/dist');
 if (existsSync(ortWasm)) {
-  for (const name of [
-    'ort-wasm-simd-threaded.mjs',
-    'ort-wasm-simd-threaded.wasm',
-    'ort-wasm-simd-threaded.jsep.mjs',
-    'ort-wasm-simd-threaded.jsep.wasm',
-  ]) {
+  for (const name of ['ort-wasm-simd-threaded.mjs', 'ort-wasm-simd-threaded.wasm']) {
     const src = join(ortWasm, name);
     if (existsSync(src)) copy(src, join(dist, 'wasm', name));
   }

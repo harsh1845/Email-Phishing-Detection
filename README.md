@@ -37,7 +37,7 @@ npm run build
 
 Load unpacked: Chrome → `chrome://extensions` → Developer mode → Load `packages/extension/dist`. Firefox → `about:debugging` → Load Temporary Add-on → `packages/extension/dist/manifest.json`.
 
-Train the URL model (downloads PhiUSIIL from UCI; optional live feeds):
+Train the URL model (downloads PhiUSIIL from UCI; optional live feeds). On macOS, LightGBM needs OpenMP: `brew install libomp`.
 
 ```bash
 packages/model/.venv/bin/python packages/model/train.py

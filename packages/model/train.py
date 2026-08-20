@@ -372,6 +372,9 @@ def main() -> None:
     }
     print(json.dumps(report, indent=2), flush=True)
 
+    import joblib
+
+    joblib.dump({"model": model, "calibrator": calibrator}, ARTIFACTS / "model.joblib")
     onnx_path = ARTIFACTS / "model.onnx"
     print(f"Exporting ONNX → {onnx_path}", flush=True)
     export_onnx(model, onnx_path)
