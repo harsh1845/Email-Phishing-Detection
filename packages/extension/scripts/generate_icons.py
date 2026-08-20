@@ -7,7 +7,7 @@ import struct
 import zlib
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parents[1] / "extension" / "icons"
+OUT = Path(__file__).resolve().parents[1] / "icons"
 
 
 def png(width: int, height: int, rgba: bytes) -> bytes:

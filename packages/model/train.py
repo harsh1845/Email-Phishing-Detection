@@ -19,7 +19,7 @@ from sklearn.model_selection import train_test_split
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
-from phishguard_model.constants import FEATURE_NAMES  # noqa: E402
+from phishguard_model.constants import BRANDS, FEATURE_NAMES  # noqa: E402
 from phishguard_model.download import (  # noqa: E402
     load_openphish,
     load_phiusiil,
@@ -121,6 +121,32 @@ LEGIT_GOLD = [
 ]
 
 
+SYNTH_TLDS = ["net", "xyz", "top", "info", "live", "club", "shop", "online", "site"]
+SYNTH_PATHS = ["/login", "/signin", "/verify", "/account", "/secure", "/update", "/confirm"]
+LEGIT_PATHS = ["/", "/about", "/help", "/blog", "/pricing", "/news", "/privacy", "/login"]
+
+
+def generate_synthetic(n_phish: int = 400, n_legit: int = 400) -> pd.DataFrame:
+    rows: list[tuple[str, int]] = []
+    i = 0
+    for brand in BRANDS:
+        token = brand["tokens"][0]
+        official = brand["domains"][0]
+        rows.append((f"https://{official}{LEGIT_PATHS[i % len(LEGIT_PATHS)]}", 0))
+        rows.append((f"https://www.{official}/", 0))
+        typo = token.replace("o", "0").replace("l", "1").replace("e", "3") or (token[:-1] + "1")
+        tld = SYNTH_TLDS[i % len(SYNTH_TLDS)]
+        path = SYNTH_PATHS[i % len(SYNTH_PATHS)]
+        rows.append((f"https://{typo}.{tld}{path}", 1))
+        rows.append((f"https://{token}-secure-login.{tld}{path}", 1))
+        rows.append((f"https://{token}.com.account-reset.{tld}{path}", 1))
+        i += 1
+    while len([r for r in rows if r[1] == 1]) < n_phish:
+        rows.append((f"http://185.22.{i % 250}.{10 + i % 80}/login", 1))
+        i += 1
+    return pd.DataFrame(rows, columns=["url", "label"]).drop_duplicates(subset=["url"])
+
+
 def host_of(url: str) -> str:
     parsed = coerce_parse(url)
     if not parsed:
@@ -163,7 +189,9 @@ def assemble_dataset(include_phresh: bool = False) -> pd.DataFrame:
 
     gold_phish = pd.DataFrame({"url": LOOKALIKE_PHISH, "label": 1})
     gold_legit = pd.DataFrame({"url": LEGIT_GOLD, "label": 0})
-    frames.extend([gold_phish, gold_legit])
+    synthetic = generate_synthetic()
+    print(f"  Synthetic lookalike/legit: {len(synthetic)}")
+    frames.extend([gold_phish, gold_legit, synthetic])
 
     if not frames:
         raise SystemExit("No training data could be downloaded.")
@@ -232,22 +260,32 @@ def choose_threshold(y: np.ndarray, scores: np.ndarray, min_precision: float = 0
 
 
 def export_onnx(model, path: Path) -> None:
-    from onnxmltools.convert import convert_lightgbm
     from onnxmltools.convert.common.data_types import FloatTensorType
 
-    booster = model.booster_
-    onnx_model = convert_lightgbm(
-        booster,
-        initial_types=[("input", FloatTensorType([None, len(FEATURE_NAMES)]))],
-        target_opset=15,
-        zipmap=False,
-    )
+    n = len(FEATURE_NAMES)
+    if hasattr(model, "booster_"):
+        from onnxmltools.convert import convert_lightgbm
+
+        onnx_model = convert_lightgbm(
+            model.booster_,
+            initial_types=[("input", FloatTensorType([None, n]))],
+            target_opset=15,
+            zipmap=False,
+        )
+    else:
+        from skl2onnx import convert_sklearn
+
+        onnx_model = convert_sklearn(
+            model,
+            initial_types=[("input", FloatTensorType([None, n]))],
+            target_opset=15,
+            options={id(model): {"zipmap": False}},
+        )
     path.write_bytes(onnx_model.SerializeToString())
 
 
 def main() -> None:
     import argparse
-    import lightgbm as lgb
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--phreshphish", action="store_true")
@@ -262,25 +300,40 @@ def main() -> None:
         df = df.sample(args.max_rows, random_state=42)
 
     train_df, test_df = split_by_host(df)
-    print(f"Train {len(train_df)} / test {len(test_df)}")
+    print(f"Train {len(train_df)} / test {len(test_df)}", flush=True)
 
-    print("Extracting features…")
+    print("Extracting features…", flush=True)
     X_train, y_train = featurize(train_df)
     X_test, y_test = featurize(test_df)
 
-    model = lgb.LGBMClassifier(
-        n_estimators=200,
-        num_leaves=63,
-        max_depth=10,
-        learning_rate=0.05,
-        subsample=0.8,
-        colsample_bytree=0.8,
-        min_child_samples=40,
-        objective="binary",
-        n_jobs=-1,
-        random_state=42,
-    )
-    print("Training LightGBM…")
+    try:
+        import lightgbm as lgb
+
+        model = lgb.LGBMClassifier(
+            n_estimators=200,
+            num_leaves=63,
+            max_depth=10,
+            learning_rate=0.05,
+            subsample=0.8,
+            colsample_bytree=0.8,
+            min_child_samples=40,
+            objective="binary",
+            n_jobs=-1,
+            random_state=42,
+        )
+        print("Training LightGBM…", flush=True)
+    except OSError as exc:
+        from sklearn.ensemble import HistGradientBoostingClassifier
+
+        print(f"LightGBM unavailable ({exc}); using HistGradientBoosting", flush=True)
+        model = HistGradientBoostingClassifier(
+            max_depth=10,
+            max_iter=200,
+            learning_rate=0.05,
+            max_leaf_nodes=63,
+            random_state=42,
+        )
+
     model.fit(X_train, y_train)
 
     raw_test = model.predict_proba(X_test)[:, 1]
@@ -308,7 +361,6 @@ def main() -> None:
         report["prevalence"][str(prev)] = metrics_at_threshold(mix_y, mix_scores, thr)
 
     gold_urls = LOOKALIKE_PHISH + LEGIT_GOLD
-    gold_y = np.array([1] * len(LOOKALIKE_PHISH) + [0] * len(LEGIT_GOLD))
     gold_raw = model.predict_proba(vectors_from_urls(gold_urls))[:, 1]
     gold_s = calibrator.predict_proba(gold_raw.reshape(-1, 1))[:, 1]
     gold_pred = gold_s >= thr
@@ -318,10 +370,10 @@ def main() -> None:
         "n_lookalike": len(LOOKALIKE_PHISH),
         "n_legit": len(LEGIT_GOLD),
     }
-    print(json.dumps(report, indent=2))
+    print(json.dumps(report, indent=2), flush=True)
 
     onnx_path = ARTIFACTS / "model.onnx"
-    print(f"Exporting ONNX → {onnx_path}")
+    print(f"Exporting ONNX → {onnx_path}", flush=True)
     export_onnx(model, onnx_path)
 
     calib = {"intercept": float(calibrator.intercept_[0]), "coef": float(calibrator.coef_[0][0])}
@@ -340,7 +392,7 @@ def main() -> None:
     target_meta = EXT_MODEL / "model_meta.json"
     target_onnx.write_bytes(onnx_path.read_bytes())
     target_meta.write_text(json.dumps(meta, indent=2))
-    print(f"Copied model to {target_onnx}")
+    print(f"Copied model to {target_onnx}", flush=True)
 
 
 if __name__ == "__main__":
